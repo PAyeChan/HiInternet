@@ -1,7 +1,15 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
-class NotificationItems extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:hiinternet/data/notification_model.dart';
+
+class NotificationItem extends StatelessWidget {
+
+  NotiModel notiModel;
+
+  NotificationItem(NotiModel notiModel) {
+    this.notiModel = notiModel;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,15 +37,14 @@ class NotificationItems extends StatelessWidget {
           ),
         ),
         title: Text(
-          'Invoice Noti',
+          notiModel.title != null ? notiModel.title : " ",
           style: TextStyle(fontSize: 14, color: Colors.black),
         ),
         subtitle: Text(
-          'Invoice NotiInvoice NotiInvoice NotiInvoice NotiInvoice NotiInvoice'
-          ' NotiInvoice NotiInvoice NotiInvoice NotiInvoice Noti',
+          notiModel.body != null ? notiModel.body : " ",
           style: TextStyle(fontSize: 13, color: Colors.black45),
         ),
-        trailing: Text('19/Jan/2020'),
+        trailing: Text(notiModel.created != null ? notiModel.created : " "),
       ),
     );
   }

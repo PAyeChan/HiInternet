@@ -1,4 +1,6 @@
 
+const String appName = "Hi Internet";
+
 const app_version = '1';
 
 // staging url
@@ -20,5 +22,9 @@ const SAVE_SERVICE_TICKET_URL = API_URL+"save_serviceticket";
 const SERVICE_CREATE_USER_URL = API_URL+"check_service_createduser";
 
 
-
+const SERVICETICKET_STATUS_PENDING = "Pending";
+const SERVICETICKET_STATUS_SOLVED = "Resolved";
+const SERVICETICKET_STATUS_CLAIM = "Claim";
+const SERVICETICKET_STATUS_NOC = "NOC final Verified";
+const SERVICETICKET_STATUS_CLOSED = "Closed";
 

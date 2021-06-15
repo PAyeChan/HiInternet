@@ -7,13 +7,28 @@ import 'package:hiinternet/screens/payment_screen/payment_screen.dart';
 import 'package:hiinternet/screens/service_history_screen/service_history_screen.dart';
 import 'package:hiinternet/screens/service_issue_screen/service_issue_screen.dart';
 import 'package:hiinternet/screens/tabs_screen/tab_screen.dart';
+
 import 'package:splashscreen/splashscreen.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:hiinternet/service/notification_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-Future<void> main() async{
+import 'dart:async';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
+import 'package:hiinternet/data/notification_model.dart';
+import 'package:hiinternet/data/database_util.dart';
+
+
+import 'dart:convert';
+
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  DatabaseUtil().InitDatabase();
 
   runApp(MultiProvider(
     providers: [
@@ -49,8 +64,103 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+  bool _initialized = false;
+  bool _error = false;
+
+  FirebaseMessaging _messaging;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  AndroidNotificationChannel channel;
+
+  void initializeFlutterFire() async {
+    try {
+      // Wait for Firebase to initialize and set `_initialized` state to true
+      await Firebase.initializeApp();
+      //initializeFirebaseMsg();
+
+      channel = AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        'This channel is used for important notifications.', // description
+        importance: Importance.max,
+      );
+
+      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+
+      setState(() {
+        _initialized = true;
+      });
+    } catch(e) {
+      // Set `_error` state to true if Firebase initialization fails
+      setState(() {
+        _error = true;
+      });
+    }
+  }
+
+  void initializeFirebaseMsg() async {
+    _messaging = FirebaseMessaging.instance;
+
+    await FirebaseMessaging.instance.subscribeToTopic('hi');
+
+    _messaging.getToken().then((token) {
+      print('TOKEN');
+      print(token);
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+        print('notification.body' + message.notification.body);
+        print('notification.body' + message.notification.title);
+      }
+
+      if (message.data != null) {
+        print('Message also contained a data: ' + jsonEncode(message.data));
+      }
+
+      NotiModel notiModel = NotiModel.fromJson(message.data);
+
+      if (notiModel != null) {
+        DatabaseUtil().insertNotification(notiModel);
+
+        flutterLocalNotificationsPlugin.show(
+            notiModel.hashCode,
+            notiModel.title,
+            notiModel.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channel.description,
+                icon: '@mipmap/ic_launcher',
+              ),
+            )
+        );
+      }
+
+    });
+  }
+
+  @override
+  void initState() {
+    initializeFlutterFire();
+    NotificationService().handleApplicationWasLaunchedFromNotification();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if(_initialized) {
+      initializeFirebaseMsg();
+    }
+
     return Center(
       child: SplashScreen(
         seconds: 3,

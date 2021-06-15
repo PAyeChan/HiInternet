@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hiinternet/screens/service_history_screen/service_history_response.dart';
+import 'package:hiinternet/utils/app_constants.dart';
 
 // ignore: must_be_immutable
 class ServiceHistoryItems extends StatelessWidget {
@@ -10,6 +11,25 @@ class ServiceHistoryItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color buttonColor = Color(0x90FF0000);
+    switch(_serviceHistoryVO.status) {
+      case SERVICETICKET_STATUS_SOLVED:
+        buttonColor = Color(0xff00ff00);
+        break;
+      case SERVICETICKET_STATUS_PENDING:
+        buttonColor = Color(0x90FF0000);
+        break;
+      case SERVICETICKET_STATUS_CLAIM:
+        buttonColor = Color(0xffff9100);
+        break;
+      case SERVICETICKET_STATUS_NOC:
+        buttonColor = Color(0xff00ff00);
+        break;
+      case SERVICETICKET_STATUS_CLOSED:
+        buttonColor = Color(0xffff9100);
+        break;
+    }
+
     return Container(
       margin: EdgeInsets.all(10),
       child: Card(
@@ -29,14 +49,14 @@ class ServiceHistoryItems extends StatelessWidget {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.green,
-                      border: Border.all(color: Colors.green),
+                      color: buttonColor,
+                      border: Border.all(color: buttonColor),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(4),
                       child: Text(
-                        'Resolved',
+                        _serviceHistoryVO.status,
                         style: TextStyle(color: Colors.white, fontSize: 12),
                       ),
                     ),

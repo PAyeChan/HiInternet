@@ -20,6 +20,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:hiinternet/utils/app_constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'package:hiinternet/data/database_util.dart';
+import 'package:hiinternet/data/notification_model.dart';
+
 //import 'package:flutter/'
 import 'dart:math' as math;
 
@@ -55,6 +58,8 @@ class _TabScreenState extends State<TabScreen>
   var userId;
 
   GlobalKey<PopupMenuButtonState<int>> _FabPopupKey = GlobalKey();
+
+  FirebaseMessaging messaging;
 
   @override
   initState() {
@@ -105,18 +110,8 @@ class _TabScreenState extends State<TabScreen>
     ));
     // check change
 
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-/*
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
-*/
+    initializeFirebaseMsg();
+
     super.initState();
   }
 
@@ -635,6 +630,32 @@ class _TabScreenState extends State<TabScreen>
     userIdController.dispose();
     _animationController.dispose();
     super.dispose();
+  }
+
+  void initializeFirebaseMsg() async {
+    /*
+    messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    //await FirebaseMessaging.instance.subscribeToTopic('hi');
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });*/
   }
 
 }

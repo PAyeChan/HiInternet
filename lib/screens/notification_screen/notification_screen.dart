@@ -1,39 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:hiinternet/widgets/notification_item.dart';
 
-import 'package:hiinternet/helpers/shared_pref.dart';
-import 'package:hiinternet/res/strings_eng.dart';
-import 'package:hiinternet/res/strings_mm.dart';
+import 'package:hiinternet/data/database_util.dart';
+import 'package:hiinternet/data/notification_model.dart';
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends StatefulWidget {
 
   static const routeName = '/notification_screen';
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      /*
-      appBar: AppBar(
-        toolbarHeight: 110,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Container(
-                padding: EdgeInsets.all(10),
-                width: 100,
+  _NotificationScreenScreenState createState() => _NotificationScreenScreenState();
+}
 
-                child: Image.asset('assets/images/hi_internet_logo.png',fit: BoxFit.fill,),
-              ),
-            ),
-          ],
-        ),
+class _NotificationScreenScreenState extends State<NotificationScreen> {
 
-      ),*/
-      body: ListView.builder(itemBuilder: (ctx,index){
-        return NotificationItems();
-      },itemCount: 5,),
-    );
+  bool bDataRetrievedLately = false;
+  List<NotiModel> SavedNotiModels;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future<List<NotiModel>> notimodels = DatabaseUtil().getAllNotiModels();
+    notimodels.then((value) {
+      SavedNotiModels = value;
+      setState(() {
+        bDataRetrievedLately = true;
+      });
+    });
   }
+
+  @override
+  Widget build(BuildContext context) {
+    if(bDataRetrievedLately) {
+      bDataRetrievedLately = false;
+
+      return Scaffold(
+        body: ListView.builder(
+          itemCount: SavedNotiModels.length,
+          itemBuilder: (ctx,index){
+            return NotificationItem(SavedNotiModels[index]);
+          },
+        ),
+      );
+    }
+
+    return Container();
+  }
+
+
 }

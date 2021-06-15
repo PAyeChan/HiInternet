@@ -73,8 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
             upImageLists = data.upImages;
             middleImageLists = data.middleImages;
             downImageLists = data.downImages;
-            print('MID_IMAGE');
-            print(data.middleImages[1].toJson().toString());
 
             return body(context);
           }

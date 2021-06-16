@@ -33,13 +33,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void initState() {
 
     SharedPref.getData(key: SharedPref.user_id).then((value) {
-      if (value != null && value.toString() != 'null') {
-         userId = json.decode(value).toString();
+        if (value != null && value.toString() != 'null') {
+          userId = json.decode(value).toString();
 
-         Map<String, String> map = {
-           'user_id': userId,
-           'app_version': app_version,
-         };
+          Map<String, String> map = {
+            'user_id': userId,
+            'app_version': app_version,
+          };
 
          _paymentBloc.getPayment(map);
       }
@@ -202,7 +202,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         padding: const EdgeInsets.only(bottom: 80),
                         child: ListView.builder(
                           itemBuilder: (ctx, index) {
-
                             return PaymentItems( list
                                 .where((element) =>allPayment ? true : paidPayment ? element.paidStatus == 'Paid' : element.paidStatus == 'UnPaid')
                                 .toList()[index]);

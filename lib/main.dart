@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hiinternet/providers/service_history_ticket.dart';
-import 'package:hiinternet/screens/account_screen/account_screen.dart';
-import 'package:hiinternet/screens/home_screen/home_screen.dart';
-import 'package:hiinternet/screens/notification_screen/notification_screen.dart';
-import 'package:hiinternet/screens/payment_screen/payment_screen.dart';
-import 'package:hiinternet/screens/service_history_screen/service_history_screen.dart';
-import 'package:hiinternet/screens/service_issue_screen/service_issue_screen.dart';
 import 'package:hiinternet/screens/tabs_screen/tab_screen.dart';
 
 import 'package:splashscreen/splashscreen.dart';
@@ -14,10 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hiinternet/service/notification_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'dart:async';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'package:hiinternet/data/notification_model.dart';
 import 'package:hiinternet/data/database_util.dart';
@@ -107,8 +97,7 @@ class _MyAppState extends State<MyApp> {
     await FirebaseMessaging.instance.subscribeToTopic('hi');
 
     _messaging.getToken().then((token) {
-      print('TOKEN');
-      print(token);
+
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {

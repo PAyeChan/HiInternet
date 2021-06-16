@@ -32,8 +32,10 @@ class PaymentBloc extends BaseNetwork {
                SharedPref.setData(SharedPref.payment,json.encode(resp.data));
 
                if (resp.data['status'] == 'Success') {
-                 resp.data =
-                     PaymentListsResponse.fromJson(resp.data).list;//payment list
+                 resp.data = PaymentListsResponse.fromJson(resp.data).list;//payment list
+               } else {
+                 print("FAIL");
+                 print(resp.data.toString());
                }
                paymentController.sink.add(resp);
              }, onErrorCallBack: (ResponseVO resp) {

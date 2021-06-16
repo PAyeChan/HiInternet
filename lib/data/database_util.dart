@@ -21,7 +21,7 @@ class DatabaseUtil {
       join(await getDatabasesPath(), 'hiinternet_database.db'),
       onCreate: (db, version) {
         return db.execute(
-        'CREATE TABLE notifications(id INTEGER PRIMARY KEY, title TEXT, body TEXT, message TEXT, type_name TEXT, action_url TEXT)',
+        'CREATE TABLE notifications(id INTEGER PRIMARY KEY, title TEXT, body TEXT, message TEXT, type_name TEXT, action_url TEXT, created TEXT)',
         );
       },
       // Set the version. This executes the onCreate function and provides a

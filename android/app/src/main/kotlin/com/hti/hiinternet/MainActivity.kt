@@ -1,4 +1,4 @@
-package com.hi.hiinternet
+package com.hti.hiinternetapp
 
 import io.flutter.embedding.android.FlutterActivity
 

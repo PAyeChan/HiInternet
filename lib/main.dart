@@ -13,11 +13,12 @@ import 'package:hiinternet/data/notification_model.dart';
 import 'package:hiinternet/data/database_util.dart';
 
 import 'package:hiinternet/utils/eventbus_util.dart';
-//import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'dart:io';
 
 import 'dart:convert';
 
 void main() {
+  HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
 
   DatabaseUtil().InitDatabase();
@@ -47,6 +48,14 @@ void main() {
       },
     ),
   ));
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
 }
 
 class MyApp extends StatefulWidget {

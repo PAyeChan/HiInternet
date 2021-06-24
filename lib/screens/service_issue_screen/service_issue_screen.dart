@@ -221,15 +221,18 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
                   height: 300,
                   width: double.infinity,
                   margin: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: EdgeInsets.all(4),
-                  child: Material(
-                    child: Container(
-                      color: Colors.white,
+                  //child: Material(
+                    //child: Container(
+                      padding: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/dialog_card_bg.png"),
+                          fit: BoxFit.fill,
+                        ),
+                        //border: Border.all(color: Colors.grey),
+                        //borderRadius: BorderRadius.circular(12),
+                      ),
+                      //color: Colors.white,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -262,21 +265,24 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
                                     setState(() {
                                       changePageIndex = 1;
                                     });
-                                    Navigator.of(context).pop();
+                                    //Navigator.of(context).pop();
+                                    Navigator.pop(ctx);
                                   }),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
+                    //),
+                  //),
                 ),
               ));
     });
   }
 
   Widget sendComplainButton(BuildContext context) {
-    return StreamBuilder<ResponseVO>(
+    return Align(
+      alignment: Alignment.center,
+      child: StreamBuilder<ResponseVO>(
       initialData: ResponseVO(),
       stream: _serviceComplainBloc.serviceComplainStream(),
       builder: (context, snapshot) {
@@ -320,7 +326,9 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
           );
         }
       },
+      ),
     );
+
   }
 
   void sendServiceComplain() {

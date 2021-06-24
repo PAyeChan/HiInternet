@@ -33,6 +33,7 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
   int changePageIndex = 0;
   var userId;
 
+  List<CategoryVO> issueCategoryList;
 
   @override
   void initState() {
@@ -139,7 +140,7 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
                                             (SharedPref.IsSelectedEng()) ? StringsEN.something_wrong : StringsMM.something_wrong),
                                       );
                                     } else {
-                                      List<CategoryVO> list = resp.data;
+                                      issueCategoryList = resp.data;
                                       return Flexible(
                                         child: Container(
                                           padding: EdgeInsets.only(left: 8),
@@ -151,7 +152,7 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
                                               selectedCategoryId =
                                                   value;
                                               },
-                                              items: list.map((data) {
+                                              items: issueCategoryList.map((data) {
                                                 return DropdownMenuItem(
                                                   child: Text(data.name),
                                                   value: data.id,
@@ -211,7 +212,7 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
   }
 
   // ignore: missing_return
-  Future showStatusDialog(BuildContext context, String status,String ticketID) async {
+  Future showStatusDialog(BuildContext context, bool isSuccess, String status,String ticketID) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await showDialog(
           context: context,
@@ -232,21 +233,23 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          Image.asset(isSuccess ? 'assets/images/icon_done.png' : 'assets/images/icon_error.png'),
                           Center(
-                            child: Text(status),
+                            child: Text(status,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20.0),),
                           ),
-
                           Center(
                             //child: Text( "Your ticket ID is $ticketID" ),
-                            child: Text((SharedPref.IsSelectedEng()) ? StringsEN.ticket_id_is : StringsMM.ticket_id_is + ticketID),
+                            child: Text(((SharedPref.IsSelectedEng()) ? StringsEN.ticket_id_is : StringsMM.ticket_id_is) + ticketID),
                           ),
-
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(36),
+                            borderRadius: BorderRadius.circular(8),
                             child: Container(
-                              width: 300,
+                              width: MediaQuery.of(context).size.width * 0.5555,
+                              height: MediaQuery.of(context).size.height * 0.0625,
                               child: RaisedButton(
-                                  color: Colors.blueAccent,
+                                  color: Theme.of(context).primaryColorDark,
                                   child: Text(
                                     //'OK',
                                     (SharedPref.IsSelectedEng()) ? StringsEN.btn_ok : StringsMM.btn_ok,
@@ -256,16 +259,10 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
                                         fontSize: 16),
                                   ),
                                   onPressed: () {
-                                    if (status == 'Fail') {
-                                      setState(() {
-                                        changePageIndex = 1;
-                                      });
-                                      Navigator.of(context).pop();
-                                    } else if (status == 'Success') {
-                                      setState(() {
-                                        changePageIndex = 1;
-                                      });
-                                    }
+                                    setState(() {
+                                      changePageIndex = 1;
+                                    });
+                                    Navigator.of(context).pop();
                                   }),
                             ),
                           ),
@@ -293,21 +290,19 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
         } else if (resp.message == MsgState.success) {
           ServiceComplainResponseVO serviceComplainResponseVO = resp.data;
           showStatusDialog(context,
-              //'Well Received',
+              true,
               (SharedPref.IsSelectedEng()) ? StringsEN.well_received : StringsMM.well_received,
               serviceComplainResponseVO.ticketId);
-
           return Center();
         } else if (resp.message == MsgState.error) {
           ServiceComplainResponseVO serviceComplainResponseVO = resp.data;
-
-          showStatusDialog(context, 'Fail','11111112222');
+          showStatusDialog(context, false, 'Fail','11111112222');
           return Center();
         } else {
           return ClipRRect(
             borderRadius: BorderRadius.circular(36),
             child: Container(
-              width: 500,
+              width: MediaQuery.of(context).size.width * 0.8,
               child: RaisedButton(
                   color: Colors.blueAccent,
                   child: Text(
@@ -329,12 +324,21 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
   }
 
   void sendServiceComplain() {
+    String categoryName = "";
+
+    for(final itr in issueCategoryList) {
+      if(itr.id == selectedCategoryId) {
+        categoryName = itr.name;
+        break;
+      }
+    }
+
     Map<String, String> map = {
       'user_id': userId,
       'app_version': app_version,
       'phone': phoneController.value.text,
       'description': descriptionController.value.text,
-      'category': selectedCategoryId.toString(),
+      'category': '[id:' + selectedCategoryId.toString() + ']',
     };
 
     _serviceComplainBloc.sendServiceComplain(map);

@@ -154,15 +154,15 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                         margin: EdgeInsets.all(10),
                         padding: EdgeInsets.all(10),
-                        width: 200,
+                        width: MediaQuery.of(context).size.width * 0.5555,
                         child: InkWell(
                           onTap: () {
                             return showDialog(
                                 context: context,
                                 builder: (ctx) => Center(
                                       child: Container(
-                                        height: 270,
-                                        width: 230,
+                                        height: MediaQuery.of(context).size.height * 0.4218,
+                                        width: MediaQuery.of(context).size.width * 0.6388,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           border:

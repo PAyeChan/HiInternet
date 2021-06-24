@@ -10,10 +10,8 @@ class TopPromotionItems extends StatelessWidget {
   TopPromotionItems(this.images);
   @override
   Widget build(BuildContext context) {
-    print(images[0].image);
-
     return Center(child: SizedBox(
-      height: 180.0,
+      height: MediaQuery.of(context).size.width * 0.5,//180.0,
       width: MediaQuery.of(context).size.width,
       child: Carousel(
         boxFit: BoxFit.fill,

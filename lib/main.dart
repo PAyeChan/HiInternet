@@ -12,6 +12,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hiinternet/data/notification_model.dart';
 import 'package:hiinternet/data/database_util.dart';
 
+import 'package:hiinternet/utils/eventbus_util.dart';
+//import 'package:flutter_event_bus/flutter_event_bus.dart';
 
 import 'dart:convert';
 
@@ -55,6 +57,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   bool _initialized = false;
+  bool _setupNotificationSystems = false;
   bool _error = false;
 
   FirebaseMessaging _messaging;
@@ -65,7 +68,6 @@ class _MyAppState extends State<MyApp> {
     try {
       // Wait for Firebase to initialize and set `_initialized` state to true
       await Firebase.initializeApp();
-      //initializeFirebaseMsg();
 
       channel = AndroidNotificationChannel(
         'high_importance_channel', // id
@@ -92,6 +94,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void initializeFirebaseMsg() async {
+    if(_setupNotificationSystems) return;
+    _setupNotificationSystems = true;
+
     _messaging = FirebaseMessaging.instance;
 
     await FirebaseMessaging.instance.subscribeToTopic('hi');
@@ -101,12 +106,9 @@ class _MyAppState extends State<MyApp> {
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification}');
-        print('notification.body' + message.notification.body);
-        print('notification.body' + message.notification.title);
+        print('notification.body' + message.notification.body + ', notification.body' + message.notification.title);
       }
 
       if (message.data != null) {
@@ -116,6 +118,8 @@ class _MyAppState extends State<MyApp> {
       NotiModel notiModel = NotiModel.fromJson(message.data);
 
       if (notiModel != null) {
+        EventBusUtils.getInstance().fire(notiModel);
+
         DatabaseUtil().insertNotification(notiModel);
 
         flutterLocalNotificationsPlugin.show(
@@ -168,6 +172,13 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    EventBusUtils.getInstance().destroy();
+    super.dispose();
+  }
+
 }
 
 class AfterSplash extends StatelessWidget {

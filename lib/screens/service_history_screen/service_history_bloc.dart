@@ -23,7 +23,6 @@ class ServiceHistoryBloc extends BaseNetwork {
       }
     });
 
-
     SharedPref.getData(key: SharedPref.token).then((value) {
       postReq(SERVICE_TICKET_RUL,
           token: json.decode(value),

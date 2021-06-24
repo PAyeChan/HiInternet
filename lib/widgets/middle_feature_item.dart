@@ -20,12 +20,10 @@ class _MiddleFeatureItemsState extends State<MiddleFeatureItems> {
 
   @override
   Widget build(BuildContext context) {
-    print(images[0].image);
-
     return Container(
       margin: EdgeInsets.all(10),
       child: Center(child: SizedBox(
-        height: 190.0,
+        height: MediaQuery.of(context).size.width * 0.5,
         width: MediaQuery.of(context).size.width,
         child: Carousel(
           boxFit: BoxFit.fill,

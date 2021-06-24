@@ -36,6 +36,8 @@ dependencies:
   url_launcher: ^6.0.6
   flutter_local_notifications: ^5.0.0
   video_player: ^2.1.6
+  #flutter_event_bus: ^0.0.2
+  event_bus: ^2.0.0
 
   plugin_platform_interface: ^2.0.0
   firebase_core: ^1.2.0
@@ -82,6 +84,8 @@ flutter:
      - assets/images/Payment (2).png
      - assets/images/Service-History.png
      - assets/images/Service-Issues.png
+     - assets/images/icon_done.png
+     - assets/images/icon_error.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

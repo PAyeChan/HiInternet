@@ -1,35 +1,41 @@
 {
   "project_info": {
-    "project_number": "1051022873691",
-    "firebase_url": "https://hticlient.firebaseio.com",
-    "project_id": "hticlient",
-    "storage_bucket": "hticlient.appspot.com"
+    "project_number": "955804609430",
+    "project_id": "hiinternet-36a09",
+    "storage_bucket": "hiinternet-36a09.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1051022873691:android:ab666c75e8ff2cbcaf9b7e",
+        "mobilesdk_app_id": "1:955804609430:android:7542043a48682205df0bb7",
         "android_client_info": {
-          "package_name": "com.hti.hiinternet"
+          "package_name": "com.moc.hiinternetapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1051022873691-vs9p3j6j4koe74v4ndcabo0ucfql4te6.apps.googleusercontent.com",
+          "client_id": "955804609430-sojj8bb71r0doeseicogkul1gpbc26dv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCdP6EsSbivVtUHpQ7SDH9qBGRPk59FCQA"
+          "current_key": "AIzaSyCceXQgAu0_HgCyDkGZXr7MrY23VOZ1i14"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1051022873691-vs9p3j6j4koe74v4ndcabo0ucfql4te6.apps.googleusercontent.com",
+              "client_id": "955804609430-sojj8bb71r0doeseicogkul1gpbc26dv.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "955804609430-ffn08jtou2nafgsvussc6aq4ckeqndff.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.moc.hiinternetapp"
+              }
             }
           ]
         }

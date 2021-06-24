@@ -4,10 +4,10 @@ const String appName = "Hi Internet";
 const app_version = '1';
 
 // staging url
-const BASE_URL = 'https://horizoninternet.myanmaronlinecreations.com/';
+//const BASE_URL = 'https://horizoninternet.myanmaronlinecreations.com/';
 
 // live url
-// const BASE_URL = 'https://horizoninternet.net/';
+ const BASE_URL = 'https://horizoninternet.net/';
 
 
 const API_URL = BASE_URL+'api/';

@@ -23,19 +23,25 @@ class SendServiceComplainBloc extends BaseNetwork{
 
     SharedPref.getData(key: SharedPref.token).then((value) {
       if(value != null) {
-
+        print('MAP: ' + map.toString());
         postReq(SAVE_SERVICE_TICKET_URL, params: map, token: json.decode(value), onDataCallBack:(ResponseVO resp) {
+          print("SERVICE_COMPLAIN");
+          print(json.encode(resp.data));
+          print(resp.toString());
 
-          print(resp.data.toString());
-          resp.data = ServiceComplainResponseVO.fromJson(resp.data);
-          ServiceComplainResponseVO serviceComplainVO = resp.data;
-          print(serviceComplainVO.status);
+          ServiceComplainResponseVO serviceComplainVO = ServiceComplainResponseVO.fromJson(resp.data);
 
-          if (resp.data['status'] == 'Success') {
-            resp = ResponseVO(message: MsgState.success);//payment list
+          print("STATUS: " + serviceComplainVO.status);
+          print("RESP STATUS: " + resp.data['status']);
+
+          if (serviceComplainVO != null && serviceComplainVO.status == 'Success') {
+            print("ON S Success");
+            resp.data = ServiceComplainResponseVO.fromJson(resp.data);
+            resp.message = MsgState.success;
           }
-          else if (resp.data['status'] == 'Fail') {
-            resp = ResponseVO(message: MsgState.error);//payment list
+          else {
+            print("ON S Fail");
+            resp.message = MsgState.error;
           }
 
           sendComplainController.sink.add(resp);
@@ -43,6 +49,7 @@ class SendServiceComplainBloc extends BaseNetwork{
         }, onErrorCallBack: (ResponseVO resp) {
           sendComplainController.sink.add(resp);
         });
+
       }
     });
 

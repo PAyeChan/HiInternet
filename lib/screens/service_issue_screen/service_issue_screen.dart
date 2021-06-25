@@ -211,12 +211,11 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
     );
   }
 
-  // ignore: missing_return
-  Future showStatusDialog(BuildContext context, bool isSuccess, String status,String ticketID) async {
+  Future<void> showStatusDialog(bool isSuccess, String status,String ticketID) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await showDialog(
           context: context,
-          builder: (ctx) => Center(
+          builder: (_) => Center(
                 child: Container(
                   height: 300,
                   width: double.infinity,
@@ -265,8 +264,8 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
                                     setState(() {
                                       changePageIndex = 1;
                                     });
-                                    //Navigator.of(context).pop();
-                                    Navigator.pop(ctx);
+                                    Navigator.of(context).pop();
+                                    //Navigator.pop(ctx);
                                   }),
                             ),
                           ),
@@ -295,14 +294,13 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
           );
         } else if (resp.message == MsgState.success) {
           ServiceComplainResponseVO serviceComplainResponseVO = resp.data;
-          showStatusDialog(context,
-              true,
+          showStatusDialog(true,
               (SharedPref.IsSelectedEng()) ? StringsEN.well_received : StringsMM.well_received,
               serviceComplainResponseVO.ticketId);
           return Center();
         } else if (resp.message == MsgState.error) {
           ServiceComplainResponseVO serviceComplainResponseVO = resp.data;
-          showStatusDialog(context, false, 'Fail','11111112222');
+          showStatusDialog(false, 'Fail','11111112222');
           return Center();
         } else {
           return ClipRRect(

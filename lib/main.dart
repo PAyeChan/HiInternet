@@ -184,7 +184,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    EventBusUtils.getInstance().destroy();
+    //EventBusUtils.getInstance().destroy();
     super.dispose();
   }
 

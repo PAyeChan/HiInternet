@@ -62,7 +62,7 @@ class PaymentItems extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.all(5),
                           child: Text(
-                            '${_paymentVO.dueDate.monthYear}',
+                            _paymentVO.paidStatus == 'Paid' ? '${_paymentVO.paidDate.monthYear}' : '${_paymentVO.dueDate.monthYear}',
                             style: TextStyle(fontSize: 15, color: Colors.grey),
                           ),
                         )

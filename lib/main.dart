@@ -17,6 +17,39 @@ import 'dart:io';
 
 import 'dart:convert';
 
+Future<void> _onReceivedFirebaseMsg(RemoteMessage message) async {
+  await Firebase.initializeApp();
+
+  onReceivedFirebaseMsg(message);
+
+  NotiModel notiModel = NotiModel.fromJson(message.data);
+
+  if (notiModel != null) {
+    EventBusUtils.getInstance().fire(notiModel);
+
+    DatabaseUtil().insertNotification(notiModel);
+  }
+}
+
+void onReceivedFirebaseMsg(RemoteMessage message) {
+  if (message.notification != null) {
+    print('Message also contained a notification: ${message.notification}');
+    print('notification.body' + message.notification.body + ', notification.body' + message.notification.title);
+  }
+
+  if (message.data != null) {
+    print('Message also contained a data: ' + jsonEncode(message.data));
+  }
+
+  NotiModel notiModel = NotiModel.fromJson(message.data);
+
+  if (notiModel != null) {
+    EventBusUtils.getInstance().fire(notiModel);
+
+    DatabaseUtil().insertNotification(notiModel);
+  }
+}
+
 void main() {
   HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
@@ -115,22 +148,10 @@ class _MyAppState extends State<MyApp> {
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-        print('notification.body' + message.notification.body + ', notification.body' + message.notification.title);
-      }
-
-      if (message.data != null) {
-        print('Message also contained a data: ' + jsonEncode(message.data));
-      }
-
+      onReceivedFirebaseMsg(message);
       NotiModel notiModel = NotiModel.fromJson(message.data);
 
       if (notiModel != null) {
-        EventBusUtils.getInstance().fire(notiModel);
-
-        DatabaseUtil().insertNotification(notiModel);
-
         flutterLocalNotificationsPlugin.show(
             notiModel.hashCode,
             notiModel.title,
@@ -147,6 +168,9 @@ class _MyAppState extends State<MyApp> {
       }
 
     });
+
+    FirebaseMessaging.onBackgroundMessage(_onReceivedFirebaseMsg);
+
   }
 
   @override

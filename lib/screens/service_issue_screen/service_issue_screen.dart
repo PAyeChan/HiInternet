@@ -211,9 +211,9 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
     );
   }
 
-  Future<void> showStatusDialog(bool isSuccess, String status,String ticketID) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await showDialog(
+  Future<void> showStatusDialog(bool isSuccess, String status,String ticketID) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
           context: context,
           builder: (_) => Center(
                 child: Container(
@@ -235,7 +235,9 @@ class _ServiceIssueScreenState extends State<ServiceIssueScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Image.asset(isSuccess ? 'assets/images/icon_done.png' : 'assets/images/icon_error.png'),
+                          Image.asset(isSuccess ? 'assets/images/done_big.png' : 'assets/images/error_big.png',
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            height: MediaQuery.of(context).size.width * 0.2,),
                           Center(
                             child: Text(status,
                               style: TextStyle(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hiinternet/widgets/notification_item.dart';
 
@@ -20,11 +22,13 @@ class _NotificationScreenScreenState extends State<NotificationScreen> {
   bool bDataRetrievedLately = false;
   List<NotiModel> SavedNotiModels;
 
+  StreamSubscription notiSub;
+
   @override
   void initState() {
     super.initState();
 
-    EventBusUtils.getInstance().on<NotiModel>().listen((event) {
+    notiSub = EventBusUtils.getInstance().on<NotiModel>().listen((event) {
       print("NOTI EVENT " + event.title);
       SavedNotiModels.add(event);
       setState(() {
@@ -39,6 +43,13 @@ class _NotificationScreenScreenState extends State<NotificationScreen> {
         bDataRetrievedLately = true;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    if(notiSub != null)
+      notiSub.cancel();
+    super.dispose();
   }
 
   @override

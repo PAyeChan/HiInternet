@@ -87,6 +87,8 @@ flutter:
      - assets/images/icon_done.png
      - assets/images/icon_error.png
      - assets/images/dialog_card_bg.png
+     - assets/images/done_big.png
+     - assets/images/error_big.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

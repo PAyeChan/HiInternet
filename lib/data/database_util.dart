@@ -16,8 +16,10 @@ class DatabaseUtil {
 
   Database databaseRef = null;
 
-  void InitDatabase() async {
-    openDatabase(
+  Future<Database> InitDatabase() async {
+    print("InitDatabase");
+
+    Future<Database> _fDb = openDatabase(
       join(await getDatabasesPath(), 'hiinternet_database.db'),
       onCreate: (db, version) {
         return db.execute(
@@ -27,13 +29,20 @@ class DatabaseUtil {
       // Set the version. This executes the onCreate function and provides a
       // path to perform database upgrades and downgrades.
       version: 1,
-    ).then((value) {
+    );
+
+    _fDb.then((value) {
       databaseRef = value;
     });
+
+    return _fDb;
+
   }
 
   Future<void> insertNotification(NotiModel notiModel) async {
+    print("insertNotification");
     if(databaseRef != null) {
+      print("adding into DB");
       await databaseRef.insert(
         'notifications',
         notiModel.toJson(),

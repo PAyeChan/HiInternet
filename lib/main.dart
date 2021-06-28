@@ -17,17 +17,21 @@ import 'dart:io';
 
 import 'dart:convert';
 
-Future<void> _onReceivedFirebaseMsg(RemoteMessage message) async {
+Future<void> _onReceivedBackgroundFirebaseMsg(RemoteMessage message) async {
   await Firebase.initializeApp();
 
-  onReceivedFirebaseMsg(message);
+  print("Firebase background msg received");
+
+  //onReceivedFirebaseMsg(message);
 
   NotiModel notiModel = NotiModel.fromJson(message.data);
 
   if (notiModel != null) {
     EventBusUtils.getInstance().fire(notiModel);
+    DatabaseUtil().InitDatabase().then((value) {
+      DatabaseUtil().insertNotification(notiModel);
+    });
 
-    DatabaseUtil().insertNotification(notiModel);
   }
 }
 
@@ -169,7 +173,7 @@ class _MyAppState extends State<MyApp> {
 
     });
 
-    FirebaseMessaging.onBackgroundMessage(_onReceivedFirebaseMsg);
+    FirebaseMessaging.onBackgroundMessage(_onReceivedBackgroundFirebaseMsg);
 
   }
 

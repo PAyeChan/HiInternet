@@ -7,7 +7,6 @@ import 'package:hiinternet/data/database_util.dart';
 import 'package:hiinternet/data/notification_model.dart';
 
 import 'package:hiinternet/utils/eventbus_util.dart';
-//import 'package:flutter_event_bus/flutter_event_bus.dart';
 
 class NotificationScreen extends StatefulWidget {
 
@@ -17,16 +16,18 @@ class NotificationScreen extends StatefulWidget {
   _NotificationScreenScreenState createState() => _NotificationScreenScreenState();
 }
 
-class _NotificationScreenScreenState extends State<NotificationScreen> {
+class _NotificationScreenScreenState extends State<NotificationScreen> with WidgetsBindingObserver {
 
   bool bDataRetrievedLately = false;
-  List<NotiModel> SavedNotiModels;
+  List<NotiModel> SavedNotiModels = <NotiModel>[];
 
   StreamSubscription notiSub;
 
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     notiSub = EventBusUtils.getInstance().on<NotiModel>().listen((event) {
       print("NOTI EVENT " + event.title);
@@ -36,6 +37,10 @@ class _NotificationScreenScreenState extends State<NotificationScreen> {
       });
     });
 
+    retrieveNotiFromDatabase();
+  }
+
+  void retrieveNotiFromDatabase() {
     Future<List<NotiModel>> notimodels = DatabaseUtil().getAllNotiModels();
     notimodels.then((value) {
       SavedNotiModels = value;
@@ -46,15 +51,25 @@ class _NotificationScreenScreenState extends State<NotificationScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      retrieveNotiFromDatabase();
+    }
+  }
+
+  @override
   void dispose() {
     if(notiSub != null)
       notiSub.cancel();
+
+    WidgetsBinding.instance.removeObserver(this);
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if(bDataRetrievedLately) {
+    if(bDataRetrievedLately && SavedNotiModels != null) {
       bDataRetrievedLately = false;
 
       return Scaffold(

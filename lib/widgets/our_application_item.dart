@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OurApplicationItems extends StatelessWidget {
   final String image;
@@ -9,14 +10,15 @@ class OurApplicationItems extends StatelessWidget {
   final String color;
   final String titleTextColor;
   final String descTextColor;
+  final String url;
 
   OurApplicationItems(this.image, this.title, this.description, this.color,
-      this.titleTextColor, this.descTextColor);
+      this.titleTextColor, this.descTextColor, this.url);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => null,
+      onTap: () => onTapApp(),
       child: Container(
         padding: EdgeInsets.all(5),
           child: Column(
@@ -60,4 +62,9 @@ class OurApplicationItems extends StatelessWidget {
       )
     );
   }
+
+  void onTapApp() {
+    launch(url);
+  }
+
 }

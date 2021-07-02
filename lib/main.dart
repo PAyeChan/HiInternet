@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hiinternet/service/notification_service.dart';
+import 'package:hiinternet/utils/firebase_token_sender.dart';
+import 'package:hiinternet/utils/app_constants.dart';
+import 'package:hiinternet/helpers/shared_pref.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:hiinternet/data/notification_model.dart';
@@ -110,6 +113,8 @@ class _MyAppState extends State<MyApp> {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   AndroidNotificationChannel channel;
 
+  final _firebaseTokenSenderBloc = FirebaseTokenSenderBloc();
+
   void initializeFlutterFire() async {
     try {
       // Wait for Firebase to initialize and set `_initialized` state to true
@@ -147,8 +152,9 @@ class _MyAppState extends State<MyApp> {
 
     await FirebaseMessaging.instance.subscribeToTopic('hi');
 
+    // send firebase token to the server
     _messaging.getToken().then((token) {
-
+      sendFirebaseToken(token);
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -214,6 +220,22 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     //EventBusUtils.getInstance().destroy();
     super.dispose();
+  }
+
+  void sendFirebaseToken(String token) {
+    SharedPref.getData(key: SharedPref.user_id).then((value) {
+      if (value != null && value.toString() != 'null') {
+        String userId = json.decode(value).toString();
+        Map<String, String> map = {
+          'user_id': userId,
+          'app_version': app_version,
+          'firebase_token': token
+        };
+
+        _firebaseTokenSenderBloc.sendFirebaseTokenToServer(map);
+      }
+    });
+
   }
 
 }

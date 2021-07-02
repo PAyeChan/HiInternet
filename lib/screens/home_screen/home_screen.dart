@@ -131,7 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 imgData.description,
                                 imgData.backgroundColor,
                                 imgData.titleTextColor,
-                                imgData.descriptionTextColor))
+                                imgData.descriptionTextColor,
+                                imgData.link))
                             .toList(),
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                             maxCrossAxisExtent: 200,

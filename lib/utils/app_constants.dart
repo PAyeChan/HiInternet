@@ -4,10 +4,10 @@ const String appName = "Hi Internet";
 const app_version = '1';
 
 // staging url
-//const BASE_URL = 'https://horizoninternet.myanmaronlinecreations.com/';
+const BASE_URL = 'https://horizoninternet.myanmaronlinecreations.com/';
 
 // live url
- const BASE_URL = 'https://horizoninternet.net/';
+//  const BASE_URL = 'https://horizoninternet.net/';
 
 
 const API_URL = BASE_URL+'api/';
@@ -27,4 +27,6 @@ const SERVICETICKET_STATUS_SOLVED = "Resolved";
 const SERVICETICKET_STATUS_CLAIM = "Claim";
 const SERVICETICKET_STATUS_NOC = "NOC final Verified";
 const SERVICETICKET_STATUS_CLOSED = "Closed";
+
+const SESSION_EXPIRE = "005";
 

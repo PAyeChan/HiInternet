@@ -18,8 +18,18 @@ class AccountBloc extends BaseNetwork {
      SharedPref.getData(key: SharedPref.account).then((value) {
        if(value!=null && value.toString() != 'null'){
          ResponseVO resp = ResponseVO();
-         resp.data = AccountResponse.fromJson(json.decode(value)).data;
-         accountController.sink.add(resp);
+
+         if(AccountResponse.fromJson(json.decode(value)).errorCode == SESSION_EXPIRE)
+           {
+             resp.message = MsgState.error;
+             accountController.sink.add(resp);
+           }
+         else{
+           resp.data = AccountResponse.fromJson(json.decode(value)).data;
+           resp.message = MsgState.success;
+           accountController.sink.add(resp);
+         }
+
        }
      });
 
@@ -33,8 +43,9 @@ class AccountBloc extends BaseNetwork {
 
                if (resp.data['status'] == 'Success') {
                  resp.data = AccountResponse.fromJson(resp.data).data;
-               }
 
+                 resp.message = MsgState.success;
+               }
                accountController.sink.add(resp);
              },
              onErrorCallBack: (ResponseVO resp) {

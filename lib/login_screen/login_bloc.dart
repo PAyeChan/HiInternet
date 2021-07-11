@@ -43,4 +43,10 @@ class LoginBloc extends BaseNetwork{
     });
   }
 
+  dispose() {
+    loginController.close();
+  }
+
+
+
 }

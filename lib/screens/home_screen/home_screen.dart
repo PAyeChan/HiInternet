@@ -37,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Map<String, String> map = {
       'user_id': 'WL07898',//'u_123',
       'app_version': app_version,
+      'type' : 'ios',
     };
     _homeBloc.getHomeData(map);
     super.initState();
@@ -110,37 +111,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                      Center(
-                        child: Text(
-                          (SharedPref.IsSelectedEng()) ? StringsEN.our_applicatijon : StringsMM.our_applicatijon,
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      GridView(
-                        shrinkWrap:true,
-                        physics: new NeverScrollableScrollPhysics(),
-                        primary: false,
-                        padding: const EdgeInsets.all(10),
-                        children: downImageLists
-                            .map((imgData) =>
-                            OurApplicationItems(
-                                imgData.imageV1,
-                                imgData.title,
-                                imgData.description,
-                                imgData.backgroundColor,
-                                imgData.titleTextColor,
-                                imgData.descriptionTextColor,
-                                imgData.link))
-                            .toList(),
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 200,
-                            mainAxisSpacing: 20,
-                            crossAxisSpacing: 20,
-                            childAspectRatio: (itemWidth /
-                                itemHeight)),
-                      )
+                      // Center(
+                      //   child: Text(
+                      //     (SharedPref.IsSelectedEng()) ? StringsEN.our_applicatijon : StringsMM.our_applicatijon,
+                      //     style: TextStyle(
+                      //         fontSize: 17,
+                      //         fontWeight: FontWeight.bold),
+                      //   ),
+                      // ),
+                      // GridView(
+                      //   shrinkWrap:true,
+                      //   physics: new NeverScrollableScrollPhysics(),
+                      //   primary: false,
+                      //   padding: const EdgeInsets.all(10),
+                      //   children: downImageLists
+                      //       .map((imgData) =>
+                      //       OurApplicationItems(
+                      //           imgData.imageV1,
+                      //           imgData.title,
+                      //           imgData.description,
+                      //           imgData.backgroundColor,
+                      //           imgData.titleTextColor,
+                      //           imgData.descriptionTextColor,
+                      //           imgData.link))
+                      //       .toList(),
+                      //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      //       maxCrossAxisExtent: 200,
+                      //       mainAxisSpacing: 20,
+                      //       crossAxisSpacing: 20,
+                      //       childAspectRatio: (itemWidth /
+                      //           itemHeight)),
+                      // )
                     ],
                   )
               )

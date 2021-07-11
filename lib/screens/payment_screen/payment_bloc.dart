@@ -18,8 +18,19 @@ class PaymentBloc extends BaseNetwork {
     SharedPref.getData(key: SharedPref.payment).then((value) {
       if(value!=null && value.toString() != 'null'){
         ResponseVO resp = ResponseVO();
-        resp.data = PaymentListsResponse.fromJson(json.decode(value)).list;
-        paymentController.sink.add(resp);
+
+        if(PaymentListsResponse.fromJson(json.decode(value)).errorCode == SESSION_EXPIRE)
+        {
+          resp.message = MsgState.error;
+          paymentController.sink.add(resp);
+        }
+        else{
+          resp.data = PaymentListsResponse.fromJson(json.decode(value)).list;
+          resp.message = MsgState.success;
+          paymentController.sink.add(resp);
+
+        }
+
       }
     });
 
@@ -32,7 +43,8 @@ class PaymentBloc extends BaseNetwork {
                SharedPref.setData(SharedPref.payment,json.encode(resp.data));
 
                if (resp.data['status'] == 'Success') {
-                 resp.data = PaymentListsResponse.fromJson(resp.data).list;//payment list
+                 resp.data = PaymentListsResponse.fromJson(resp.data).list;
+                 resp.message = MsgState.success;//payment list
                } else {
                  print("FAIL");
                  print(resp.data.toString());

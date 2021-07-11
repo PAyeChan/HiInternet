@@ -8,6 +8,7 @@ import 'package:hiinternet/helpers/shared_pref.dart';
 import 'package:hiinternet/login_screen/login_bloc.dart';
 import 'package:hiinternet/screens/account_screen/account_screen.dart';
 import 'package:hiinternet/screens/home_screen/check_create_user_bloc.dart';
+import 'package:hiinternet/screens/home_screen/check_create_user_response.dart';
 import 'package:hiinternet/screens/home_screen/home_screen.dart';
 import 'package:hiinternet/screens/notification_screen/notification_screen.dart';
 import 'package:hiinternet/screens/payment_screen/payment_screen.dart';
@@ -19,6 +20,7 @@ import 'package:hiinternet/screens/home_screen/home_response.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hiinternet/utils/app_constants.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 import 'package:hiinternet/data/database_util.dart';
 import 'package:hiinternet/data/notification_model.dart';
@@ -39,7 +41,6 @@ class _TabScreenState extends State<TabScreen>
   var _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String selectedLang = 'ENG';
-
 
   bool isOpened = false;
   AnimationController _animationController;
@@ -93,9 +94,8 @@ class _TabScreenState extends State<TabScreen>
         curve: _curve,
       ),
     )..addStatusListener((AnimationStatus status) {
-      if (status == AnimationStatus.completed) {}
-    })
-    );
+        if (status == AnimationStatus.completed) {}
+      }));
 
     _rotateButton = Tween<double>(
       begin: 0,
@@ -111,6 +111,18 @@ class _TabScreenState extends State<TabScreen>
     // check change
 
     initializeFirebaseMsg();
+
+    _checkCreateUserBloc.checkCreateUserStream().listen((ResponseVO resp) {
+      if(resp.message == MsgState.error){
+        showCheckCreateUserDialog(context, 'fail');
+      }
+      else if(resp.message == MsgState.success){
+        setState(() {
+          changePageIndex = 6;
+          isOpened = false;
+        });
+      }
+    });
 
     super.initState();
   }
@@ -139,9 +151,10 @@ class _TabScreenState extends State<TabScreen>
     int PageIndex = 0;
 
     PageIndex = (changePageIndex == 5 || changePageIndex == 6)
-        ? changePageIndex : _selectedPageIndex;
+        ? changePageIndex
+        : _selectedPageIndex;
 
-    switch(PageIndex) {
+    switch (PageIndex) {
       case 0:
         return HomeScreen();
       case 1:
@@ -161,75 +174,95 @@ class _TabScreenState extends State<TabScreen>
 
   Widget getFabBtn() {
     return PopupMenuButton<int>(
-      key: _FabPopupKey,
-      offset: (selectedLang == 'ENG') ? Offset(50, -180) : Offset(72, -180),
-      onCanceled: closeFabPopup,
-      onSelected: onSelectFabPopupItem,
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          value: 1,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image.asset('assets/images/call.png', width: 24, height: 24),
-              SizedBox(width: 4,),
-              Text((selectedLang == "ENG") ? StringsEN.phone : StringsMM.phone,
-                style: TextStyle(fontSize: (selectedLang == "ENG") ? 14 : 12),
+        key: _FabPopupKey,
+        offset: (selectedLang == 'ENG') ? Offset(50, -180) : Offset(72, -180),
+        onCanceled: closeFabPopup,
+        onSelected: onSelectFabPopupItem,
+        itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset('assets/images/call.png',
+                        width: 24, height: 24),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      (selectedLang == "ENG")
+                          ? StringsEN.phone
+                          : StringsMM.phone,
+                      style: TextStyle(
+                          fontSize: (selectedLang == "ENG") ? 14 : 12),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 2,
+                child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Image.asset('assets/images/Service-Issues.png',
+                                width: 24, height: 24),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              (selectedLang == "ENG")
+                                  ? StringsEN.service_issue
+                                  : StringsMM.service_issue,
+                              style: TextStyle(
+                                fontSize: (selectedLang == "ENG") ? 14 : 12,
+                              ),
+                            ),
+                          ],
+                        )
+
+              ),
+              PopupMenuItem(
+                value: 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset('assets/images/Service-History.png',
+                        width: 24, height: 24),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      (selectedLang == "ENG")
+                          ? StringsEN.service_history
+                          : StringsMM.service_history,
+                      style: TextStyle(
+                          fontSize: (selectedLang == "ENG") ? 14 : 12),
+                    ),
+                  ],
+                ),
               ),
             ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 2,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image.asset('assets/images/Service-Issues.png', width: 24, height: 24),
-              SizedBox(width: 4,),
-              Text((selectedLang == "ENG") ? StringsEN.service_issue : StringsMM.service_issue,
-                style: TextStyle(fontSize: (selectedLang == "ENG") ? 14 : 12, ),
-              ),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 3,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image.asset('assets/images/Service-History.png', width: 24, height: 24),
-              SizedBox(width: 4,),
-              Text((selectedLang == "ENG") ? StringsEN.service_history : StringsMM.service_history,
-                style: TextStyle(fontSize: (selectedLang == "ENG") ? 14 : 12),
-              ),
-            ],
-          ),
-        ),
-      ],
-      child: ElevatedButton(
+        child: ElevatedButton(
           child: Image.asset('assets/images/floating_icon.png'),
           style: ButtonStyle(
-            minimumSize: MaterialStateProperty.all(Size.zero),
+              minimumSize: MaterialStateProperty.all(Size.zero),
               padding: MaterialStateProperty.all(EdgeInsets.zero),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
               backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      side: BorderSide(color: Colors.blueGrey, width: 1.0),
-                  )
-              )
-          ),
+                borderRadius: BorderRadius.circular(32.0),
+                side: BorderSide(color: Colors.blueGrey, width: 1.0),
+              ))),
           onPressed: onPopupFabPressed,
-      )
-    );
+        ));
   }
 
   onPopupFabPressed() {
     _FabPopupKey.currentState.showButtonMenu();
 
-    if(isOpened == false)
+    if (isOpened == false)
       _animationController.forward();
     else
       _animationController.reverse();
@@ -244,26 +277,43 @@ class _TabScreenState extends State<TabScreen>
 
   onSelectFabPopupItem(int index) {
     closeFabPopup();
-    if(index == 1) {
+    if (index == 1) {
       SharedPref.getData(key: SharedPref.home).then((value) {
-        if(value!=null && value.toString() != 'null'){
-          String hotline_ph = HomeDataResponse.fromJson(json.decode(value)).hotlinePhone;
+        if (value != null && value.toString() != 'null') {
+          String hotline_ph =
+              HomeDataResponse.fromJson(json.decode(value)).hotlinePhone;
           launch("tel://" + hotline_ph);
         }
       });
-    } else if(index == 2) {
+    } else if (index == 2) {
       // pressed service_issue
+
       SharedPref.getData(key: SharedPref.token).then((value) {
         if (value != null && value.toString() != 'null') {
-          setState(() {
-            changePageIndex = 6;
-            isOpened = false;
-          });
+          checkCreateUser();
+          // SharedPref.getData(key: SharedPref.create_user_status).then((value) {
+          //
+          //   if (value != null && value.toString() != 'null') {
+          //     var  status = json.decode(value).toString();
+          //     print('Main :' + status);
+          //     if(status == 'success'){
+          //       setState(() {
+          //         changePageIndex = 6;
+          //         isOpened = false;
+          //         SharedPref.setData(SharedPref.create_user_status,'');
+          //       });
+          //
+          //     }
+          //     else if(status == 'fail'){
+          //       showCheckCreateUserDialog(context, status);
+          //     }
+          //   }
+          // });
         } else {
           showUserLoginDialog(context);
         }
       });
-    } else if(index == 3) {
+    } else if (index == 3) {
       SharedPref.getData(key: SharedPref.token).then((value) {
         if (value != null && value.toString() != 'null') {
           setState(() {
@@ -290,7 +340,7 @@ class _TabScreenState extends State<TabScreen>
             selectedLang = 'မြန်မာ';
           });
         }
-      } else{
+      } else {
         selectedLang = 'ENG';
         SharedPref.setData(SharedPref.language_status, selectedLang);
       }
@@ -301,10 +351,8 @@ class _TabScreenState extends State<TabScreen>
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       key: _scaffoldKey,
-
       appBar: AppBar(
         toolbarHeight: 110,
         backgroundColor: Theme.of(context).primaryColorDark,
@@ -336,8 +384,8 @@ class _TabScreenState extends State<TabScreen>
               style: NeumorphicStyle(
                   color: Colors.white,
                   shape: NeumorphicShape.concave,
-                  boxShape: NeumorphicBoxShape.roundRect(
-                      BorderRadius.circular(12)),
+                  boxShape:
+                      NeumorphicBoxShape.roundRect(BorderRadius.circular(12)),
                   depth: -4,
                   lightSource: LightSource.topLeft),
               child: DropdownButtonFormField<String>(
@@ -345,12 +393,12 @@ class _TabScreenState extends State<TabScreen>
                 value: selectedLang,
                 items: ["မြန်မာ", "ENG"]
                     .map((label) => DropdownMenuItem(
-                  child: Text(
-                    label,
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  value: label,
-                ))
+                          child: Text(
+                            label,
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          value: label,
+                        ))
                     .toList(),
                 onChanged: (value) {
                   setState(() {
@@ -378,38 +426,79 @@ class _TabScreenState extends State<TabScreen>
         unselectedFontSize: (selectedLang == "ENG") ? 12 : 10,
         items: [
           BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).primaryColor,
-              icon: Image.asset('assets/images/home.png', width: 20, height: 20,),
-            activeIcon: Image.asset('assets/images/home-1.png', width: 20, height: 20,),
-              label: (selectedLang == "ENG") ? StringsEN.home : StringsMM.home,
-                //'Home',
-          ),
-          BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).primaryColor,
-              icon: Image.asset('assets/images/Payment (2).png', width: 20, height: 20,),
-              activeIcon: Image.asset('assets/images/Payment (1).png', width: 20, height: 20,),
-              label: (selectedLang == "ENG") ? StringsEN.payment : StringsMM.payment,
-                //'Payment',
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Image.asset(
+              'assets/images/home.png',
+              width: 20,
+              height: 20,
+            ),
+            activeIcon: Image.asset(
+              'assets/images/home-1.png',
+              width: 20,
+              height: 20,
+            ),
+            label: (selectedLang == "ENG") ? StringsEN.home : StringsMM.home,
+            //'Home',
           ),
           BottomNavigationBarItem(
             backgroundColor: Theme.of(context).primaryColor,
-            icon: Icon(Icons.notifications, size: 5.0, color: Color(0x00FFFFFF),),
+            icon: Image.asset(
+              'assets/images/Payment (2).png',
+              width: 20,
+              height: 20,
+            ),
+            activeIcon: Image.asset(
+              'assets/images/Payment (1).png',
+              width: 20,
+              height: 20,
+            ),
+            label:
+                (selectedLang == "ENG") ? StringsEN.payment : StringsMM.payment,
+            //'Payment',
+          ),
+          BottomNavigationBarItem(
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Icon(
+              Icons.notifications,
+              size: 5.0,
+              color: Color(0x00FFFFFF),
+            ),
             label: "",
             //'Payment',
           ),
           BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).primaryColor,
-              icon: Image.asset('assets/images/notifications.png', width: 20, height: 20,),
-              activeIcon: Image.asset('assets/images/notifications-1.png', width: 20, height: 20,),
-              label: (selectedLang == "ENG") ? StringsEN.notification : StringsMM.notification,
-                //'Notification',
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Image.asset(
+              'assets/images/notifications.png',
+              width: 20,
+              height: 20,
+            ),
+            activeIcon: Image.asset(
+              'assets/images/notifications-1.png',
+              width: 20,
+              height: 20,
+            ),
+            label: (selectedLang == "ENG")
+                ? StringsEN.notification
+                : StringsMM.notification,
+            //'Notification',
           ),
           BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).primaryColor,
-              icon: Image.asset('assets/images/Account (1).png', width: 20, height: 20,),
-              activeIcon: Image.asset('assets/images/Account (2).png', width: 20, height: 20,),
-              label: (selectedLang == "ENG") ? StringsEN.my_account : StringsMM.my_account,
-                //'My Account',
+            backgroundColor: Theme.of(context).primaryColor,
+            icon: Image.asset(
+              'assets/images/Account (1).png',
+              width: 20,
+              height: 20,
+            ),
+            activeIcon: Image.asset(
+              'assets/images/Account (2).png',
+              width: 20,
+              height: 20,
+            ),
+            label: (selectedLang == "ENG")
+                ? StringsEN.my_account
+                : StringsMM.my_account,
+            //'My Account',
           ),
         ],
       ),
@@ -417,16 +506,11 @@ class _TabScreenState extends State<TabScreen>
       floatingActionButton: Container(
         margin: EdgeInsets.only(bottom: 30),
         child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Transform.rotate(
-            angle: _rotateButton.value,
-            child: Container(
-              height: 70.0,
-              width: 70.0,
-              child: getFabBtn()
-            )
-          )
-        ),
+            alignment: Alignment.bottomCenter,
+            child: Transform.rotate(
+                angle: _rotateButton.value,
+                child:
+                    Container(height: 70.0, width: 70.0, child: getFabBtn()))),
       ),
     );
   }
@@ -472,7 +556,9 @@ class _TabScreenState extends State<TabScreen>
                         ),
                         Text(
                           //'Please sign in to unlock all\naccount features',
-                          (selectedLang == "ENG") ? StringsEN.ned_to_login_first : StringsMM.ned_to_login_first,
+                          (selectedLang == "ENG")
+                              ? StringsEN.ned_to_login_first
+                              : StringsMM.ned_to_login_first,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: FontWeight.normal,
@@ -487,9 +573,13 @@ class _TabScreenState extends State<TabScreen>
                             textAlign: TextAlign.center,
                             decoration: InputDecoration(
                                 contentPadding: EdgeInsets.only(top: 15),
-                                hintText: (selectedLang == "ENG") ? StringsEN.userID : StringsMM.userID,//'User ID',
+                                hintText: (selectedLang == "ENG")
+                                    ? StringsEN.userID
+                                    : StringsMM.userID, //'User ID',
                                 errorText: _validate ? 'Empty' : null,
-                                hintStyle: TextStyle(fontSize: (selectedLang == "ENG") ? 15 : 13)),
+                                hintStyle: TextStyle(
+                                    fontSize:
+                                        (selectedLang == "ENG") ? 15 : 13)),
                           ),
                         ),
                         SizedBox(
@@ -503,7 +593,9 @@ class _TabScreenState extends State<TabScreen>
                           children: [
                             Text(
                               //'need help?',
-                              (selectedLang == "ENG") ? StringsEN.needHelp : StringsMM.needHelp,
+                              (selectedLang == "ENG")
+                                  ? StringsEN.needHelp
+                                  : StringsMM.needHelp,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize: 12,
@@ -579,7 +671,10 @@ class _TabScreenState extends State<TabScreen>
             );
           } else if (resp.message == MsgState.error) {
             return Center(
-              child: Text((selectedLang == "ENG") ? StringsEN.something_wrong : StringsMM.something_wrong),//'Something wrong,try again...'),
+              child: Text((selectedLang == "ENG")
+                  ? StringsEN.something_wrong
+                  : StringsMM
+                      .something_wrong), //'Something wrong,try again...'),
             );
           } else if (resp.message == MsgState.success) {
             Navigator.of(context).pop();
@@ -597,15 +692,21 @@ class _TabScreenState extends State<TabScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset('assets/images/Log Out (Large).png', width: 33, height: 33, ),
+                        Image.asset(
+                          'assets/images/Log Out (Large).png',
+                          width: 33,
+                          height: 33,
+                        ),
                         SizedBox(
                           width: 6,
                         ),
-                        Flexible (
+                        Flexible(
                           child: new Container(
                             child: Text(
                               //'sign in',
-                              (selectedLang == "ENG") ? StringsEN.signin : StringsMM.signin,
+                              (selectedLang == "ENG")
+                                  ? StringsEN.signin
+                                  : StringsMM.signin,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   decoration: TextDecoration.none,
@@ -625,10 +726,98 @@ class _TabScreenState extends State<TabScreen>
         });
   }
 
+  void showCheckCreateUserDialog(BuildContext context, String status) {
+    showDialog(
+        context: context,
+        builder: (ctx) => Center(
+              child: Container(
+                height: 300,
+                width: double.infinity,
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: EdgeInsets.all(4),
+                child: Material(
+                  child: Container(
+                    color: Colors.white,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Center(
+                          child: Image.asset(
+                            'assets/images/error_big.png',
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            height: MediaQuery.of(context).size.width * 0.2,
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            'Fail',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Center(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Ticket can\'t be created as we are working\nfor your current ticket',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(36),
+                          child: Container(
+                            width: 300,
+                            child: RaisedButton(
+                                color: Colors.blueAccent,
+                                child: Text(
+                                  'OK',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                ),
+                                onPressed: () {
+                                  if (status == 'fail') {
+                                    setState(() {
+                                      changePageIndex = 5;
+                                      _animationController.reverse();
+                                      isOpened = false;
+                                    });
+                                    Navigator.of(context).pop();
+                                  } else {
+                                    setState(() {
+                                      changePageIndex = 6;
+                                      _animationController.reverse();
+                                      isOpened = false;
+                                    });
+                                    Navigator.of(context).pop();
+                                  }
+                                }),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ));
+  }
+
   @override
   void dispose() {
     userIdController.dispose();
     _animationController.dispose();
+    _checkCreateUserBloc.dispose();
+    _loginBloc.dispose();
     super.dispose();
   }
 
@@ -657,5 +846,4 @@ class _TabScreenState extends State<TabScreen>
       }
     });*/
   }
-
 }

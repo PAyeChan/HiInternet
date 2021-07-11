@@ -10,7 +10,8 @@ enum MsgState{
   data,
   loading,
   error,
-  success
+  success,
+  expire,
 }
 
 enum ErrorState{

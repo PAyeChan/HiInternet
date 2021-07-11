@@ -17,6 +17,7 @@ class SharedPref with ChangeNotifier{
   static const complain_category ='complain_category';
   static const language_status ='language_status';
   static const payment_method_url = 'payment_method_url';
+  static const create_user_status = 'create_user_status';
 
   static String cache_selected_language = "ENG";
 

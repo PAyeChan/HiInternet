@@ -1,5 +1,6 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:hiinternet/helpers/shared_pref.dart';
 import 'package:hiinternet/screens/home_screen/home_response.dart';
 
 // ignore: must_be_immutable
@@ -27,7 +28,9 @@ class TopPromotionItems extends StatelessWidget {
         showIndicator: true,
         indicatorBgPadding: 7.0,
         images: images.map((imgData) =>
-          NetworkImage(imgData.image)).toList(),
+          NetworkImage(
+              (SharedPref.IsSelectedEng()) ? imgData.image : imgData.imageMm
+              )).toList(),
       ),
     ),);
   }

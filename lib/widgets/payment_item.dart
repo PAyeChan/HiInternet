@@ -25,7 +25,7 @@ class PaymentItems extends StatelessWidget {
                   width: double.infinity,
                   alignment: Alignment.center,
                   height: 50,
-                  color: _paymentVO.paidStatus == 'Paid' ? Colors.cyan : Colors.blue,
+                  color: _paymentVO.paidStatus == 'Paid' ? Color(0xFFADD8E6) : Color(0xFF181848),
                   child: Text(
                     _paymentVO.paidStatus == 'Paid' ? 'PAID' : 'PAY NOW',
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
@@ -51,6 +51,7 @@ class PaymentItems extends StatelessWidget {
                         ),
                         Container(
                           padding: EdgeInsets.all(5),
+                          margin: EdgeInsets.only(left: 18),
                           child: Text(
                             _paymentVO.paidStatus == 'Paid' ? '${_paymentVO.paidDate.day}' : '${_paymentVO.dueDate.day}',
                             style: TextStyle(

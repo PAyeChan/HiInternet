@@ -76,6 +76,7 @@ void main() {
           textTheme: ThemeData.light().textTheme.copyWith(
                 button: TextStyle(color: Colors.white),
               )),
+        debugShowCheckedModeBanner: false,
       home: MyApp(),
       routes: {/*
         HomeScreen.routeName: (ctx) => HomeScreen("ENG"),

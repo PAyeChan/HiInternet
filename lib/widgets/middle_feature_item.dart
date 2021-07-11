@@ -1,5 +1,7 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:hiinternet/helpers/shared_pref.dart';
 import 'package:hiinternet/screens/home_screen/home_response.dart';
 import 'package:video_player/video_player.dart';
 
@@ -23,7 +25,7 @@ class _MiddleFeatureItemsState extends State<MiddleFeatureItems> {
     return Container(
       margin: EdgeInsets.all(10),
       child: Center(child: SizedBox(
-        height: MediaQuery.of(context).size.width * 0.5,
+        height: MediaQuery.of(context).size.width * 0.8,
         width: MediaQuery.of(context).size.width,
         child: Carousel(
           boxFit: BoxFit.fill,
@@ -39,7 +41,8 @@ class _MiddleFeatureItemsState extends State<MiddleFeatureItems> {
           showIndicator: true,
           indicatorBgPadding: 7.0,
           images: images.map((imgData) =>
-            CreateCarouselItem(imgData.image, imgData.videoUrl)).toList(),
+            CreateCarouselItem(
+                (SharedPref.IsSelectedEng()) ? imgData.image : imgData.imageMm, imgData.videoUrl)).toList(),
         ),
       ),),
     );
@@ -56,7 +59,8 @@ class _MiddleFeatureItemsState extends State<MiddleFeatureItems> {
 
   Widget CreateCarouselItem(String imgUrl, String videoUrl) {
     if(imgUrl != null && imgUrl.isNotEmpty) {
-      return Image.network(imgUrl);
+      return Image.network(imgUrl,fit: BoxFit.fill,
+        width: MediaQuery.of(context).size.width,);
     }
 
     if(videoUrl != null && videoUrl.isNotEmpty) {
